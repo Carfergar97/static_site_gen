@@ -5,7 +5,10 @@ class HTMLNodeTest(unittest.TestCase):
     def test_node_eq(self):
         node = HTMLNode("p", "Hello")
         node2 = HTMLNode("p", "Hello")
-        self.assertEqual(node, node2)
+        self.assertEqual(node.tag, node2.tag)
+        self.assertEqual(node.value,node2.value)
+        self.assertEqual(node.children,node2.children)
+        self.assertEqual(node.props,node2.props)
     
     def test_node_neq(self):
         node = HTMLNode("p", "Hello")

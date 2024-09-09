@@ -24,12 +24,6 @@ class HTMLNode():
 
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
 
-    def __eq__(self, other) -> bool:
-        
-        return (self.tag == other.tag
-                and self.value == other.value
-                and self.children == other.children
-                and self.props == other.props)
 
 
 class LeafNode(HTMLNode):
@@ -42,4 +36,14 @@ class LeafNode(HTMLNode):
         if self.tag == None:
             return self.value
         else:
-            return f"<{self.tag}>"+f"{self.value}"+f"<{self.tag}>"
+            if self.tag == "p":
+                return f"<{self.tag}>"+f"{self.value}"+f"</{self.tag}>"
+            elif self.tag == "a":
+                if self.props == None:
+                    raise Exception("There is not hyperlink available.")
+                return f"<{self.tag} " + f"href=" + f'"{self.props["href"]}">' + f"{self.value}" + f"</{self.tag}>"
+            else:
+                raise Exception("This tag is not managed yet...")
+
+    def __repr__(self):
+        return f"LeafNode({self.tag}, {self.value}, {self.props})"
