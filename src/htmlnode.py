@@ -35,6 +35,10 @@ class ParentNode(HTMLNode):
         if self.children == None:
             raise ValueError("Parent nodes must have childrens!!!")
 
+        children_html = ""
+        for child in self.children:
+            children_html += child.to_html()
+        return f"<{self.tag}{self.props_to_html()}>{children_html}</{self.tag}>"
         
 class LeafNode(HTMLNode):
     def __init__(self, tag: str = None, value: str = None, props: dict = None) -> None:
@@ -46,14 +50,6 @@ class LeafNode(HTMLNode):
         if self.tag == None:
             return self.value
         return  f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
-            # if self.tag == "p":
-            #     return f"<{self.tag}>"+f"{self.value}"+f"</{self.tag}>"
-            # elif self.tag == "a":
-            #     if self.props == None:
-            #         raise Exception("There is not hyperlink available.")
-            #     return f"<{self.tag} " + f"href=" + f'"{self.props["href"]}">' + f"{self.value}" + f"</{self.tag}>"
-            # else:
-            #     raise Exception("This tag is not managed yet...")
 
     def __repr__(self):
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
