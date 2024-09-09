@@ -18,7 +18,7 @@ class HTMLNodeTest(unittest.TestCase):
     def test_node_props_to_hmtl(self):
         node = HTMLNode("p", "Hello", props={"href": "https://www.google.com", 
         "target": "_blank",})
-        self.assertEqual(node.props_to_html(),'href="https://www.google.com" target="_blank"')
+        self.assertEqual(node.props_to_html(),' href="https://www.google.com" target="_blank"')
 
 if __name__ == "__main__":
     
