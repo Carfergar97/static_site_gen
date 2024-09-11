@@ -36,3 +36,32 @@ def text_node_to_html_node(text_node:TextNode) -> LeafNode :
             return LeafNode("img", props= {"src":f"{text_node.url}", "alt":f"{text_node.text}"})
         case _:
             raise Exception("Text type not known!!!")
+
+def split_nodes_delimiter(old_nodes: list, delimiter: str, text_type:str):
+    nodes = [ ]
+
+    for node in old_nodes:
+
+        if node.text_type != "text":
+            nodes.append(node)
+            continue 
+
+        if node.text.count(delimiter) % 2 != 0 :
+            raise Exception("You need two delimiters: opening and closing!!!")
+
+        node_content = node.text.split(delimiter)
+
+        if len(node_content) == 1:
+            nodes.append(TextNode(node_content[0],"text"))
+            continue
+
+        nodes.append(TextNode(node_content[0],"text"))
+        for text in node_content[1:]: 
+            if text == "":
+                continue
+            new_node = TextNode(text,"text")
+            if nodes[-1].text_type == "text":
+                new_node.text_type = text_type
+            nodes.append(new_node)
+
+    return nodes
