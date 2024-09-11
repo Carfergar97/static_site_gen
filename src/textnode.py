@@ -74,17 +74,19 @@ def split_nodes_image(old_nodes:list) -> list:
             nodes.append(node)
             continue
 
-        node_content = node.text.split(f"![{image[0][0]}]({image[0][1]})",1)
-        for i in range(len(image)):
+        new_text = node.text
+        for image_content in image: 
+            node_content = new_text.split(f"![{image_content[0]}]({image_content[1]})", 1)
             if len(node_content) != 2:
                 raise ValueError("Invalid markdown, image section not closed")
             if node_content[0] != "":
                 nodes.append(TextNode(node_content[0], "text"))
                 
-            nodes.append(TextNode(image[i][0],"image",image[i][1]))
+            nodes.append(TextNode(image_content[0],"image",image_content[1]))
 
-            if i < len(image) - 1:
-                node_content = node_content[1].split(f"![{image[i + 1][0]}]({image[i + 1][1]})",1)
+            new_text = node_content[1]
+        if new_text != "":
+            nodes.append(TextNode(new_text,"text"))
 
     return nodes
 
@@ -100,35 +102,27 @@ def split_nodes_link(old_nodes:list) -> list:
         if len(link) == 0:
             nodes.append(node)
             continue
-
-        node_content = node.text.split(f"[{link[0][0]}]({link[0][1]})",1)
-        for i in range(len(link)):
+        
+        new_text = node.text
+        for link_content in link: 
+            node_content = new_text.split(f"[{link_content[0]}]({link_content[1]})", 1)
             if len(node_content) != 2:
                 raise ValueError("Invalid markdown, image section not closed")
             if node_content[0] != "":
                 nodes.append(TextNode(node_content[0], "text"))
                 
-            nodes.append(TextNode(link[i][0],"link",link[i][1]))
+            nodes.append(TextNode(link_content[0],"link",link_content[1]))
 
-            if i < len(link) - 1:
-                node_content = node_content[1].split(f"[{link[i + 1][0]}]({link[i + 1][1]})",1)
+            new_text = node_content[1]
+        if new_text != "":
+            nodes.append(TextNode(new_text,"text"))
+        
 
     return nodes
 
 def text_to_textnodes(text:str) -> list:
-    node = TextNode(text, "text")
-
-    bold_parsed_nodes = split_nodes_delimiter([node], "**", "bold")
-
-    italic_parsed_nodes = split_nodes_delimiter(bold_parsed_nodes, "*", "italic")
-
-    code_parsed_nodes = split_nodes_delimiter(italic_parsed_nodes, "`", "code")
-
-    link_parsed_nodes = split_nodes_link(code_parsed_nodes)
-
-    image_parsed_nodes = split_nodes_image(link_parsed_nodes)
     
-    return image_parsed_nodes
+    return split_nodes_image(split_nodes_link(split_nodes_delimiter(split_nodes_delimiter(split_nodes_delimiter([TextNode(text, "text")],"**","bold"),"*","italic"),"`","code")))
 
 
 if __name__ == "__main__":
@@ -136,4 +130,6 @@ if __name__ == "__main__":
                                     "text")]))
     print(split_nodes_link([TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
                                     "text")]))
+    print(split_nodes_image([TextNode("![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a ", "text")]))
+
     print(text_to_textnodes("This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"))
