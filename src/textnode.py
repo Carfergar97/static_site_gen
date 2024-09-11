@@ -46,22 +46,16 @@ def split_nodes_delimiter(old_nodes: list, delimiter: str, text_type:str):
             nodes.append(node)
             continue 
 
-        if node.text.count(delimiter) % 2 != 0 :
-            raise Exception("You need two delimiters: opening and closing!!!")
-
         node_content = node.text.split(delimiter)
 
-        if len(node_content) == 1:
-            nodes.append(TextNode(node_content[0],"text"))
-            continue
+        if len(node_content) % 2 == 0 :
+            raise Exception("You need two delimiters: opening and closing!!!")
 
-        nodes.append(TextNode(node_content[0],"text"))
-        for text in node_content[1:]: 
-            if text == "":
+        for section_idx in range(len(node_content)): 
+            if node_content[section_idx] == "":
                 continue
-            new_node = TextNode(text,"text")
-            if nodes[-1].text_type == "text":
-                new_node.text_type = text_type
-            nodes.append(new_node)
-
+            if section_idx % 2 == 0:
+                nodes.append(TextNode(node_content[section_idx], "text"))
+            else:
+                nodes.append(TextNode(node_content[section_idx], text_type))
     return nodes
