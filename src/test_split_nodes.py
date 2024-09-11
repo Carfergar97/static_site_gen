@@ -1,5 +1,5 @@
 import unittest
-from textnode import TextNode, split_nodes_delimiter
+from textnode import TextNode, split_nodes_delimiter, split_nodes_image, split_nodes_link
 
 
 class TestSplitNodes(unittest.TestCase):
@@ -28,6 +28,21 @@ class TestSplitNodes(unittest.TestCase):
         self.assertEqual(new_node_lst[0].text, "This is text with a ")
         self.assertEqual(new_node_lst[1].text, "code block")
         self.assertEqual(new_node_lst[2].text, " word")
-
+    
+    def test_split_nodes_image(self):
+        node_lst = [TextNode("This is text with a image ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
+                                    "text")]
+        self.assertEqual(split_nodes_image(node_lst), [TextNode("This is text with a image ", "text"),
+                                        TextNode("rick roll", "image", "https://i.imgur.com/aKaOqIh.gif"),
+                                        TextNode(" and ", "text"),
+                                        TextNode("obi wan", "image", "https://i.imgur.com/fJRm4Vk.jpeg")])
+    
+    def test_split_nodes_link(self):
+        node_lst = [TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+                                    "text")]
+        self.assertEqual(split_nodes_link(node_lst), [TextNode("This is text with a link ", "text"),
+                                        TextNode("to boot dev", "link", "https://www.boot.dev"),
+                                        TextNode(" and ", "text"),
+                                        TextNode("to youtube", "link", "https://www.youtube.com/@bootdotdev")])
 if __name__ == "__main__":
     unittest.main()
