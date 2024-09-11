@@ -44,5 +44,30 @@ class TestSplitNodes(unittest.TestCase):
                                         TextNode("to boot dev", "link", "https://www.boot.dev"),
                                         TextNode(" and ", "text"),
                                         TextNode("to youtube", "link", "https://www.youtube.com/@bootdotdev")])
+    def test_split_image_single(self):
+        node = TextNode(
+            "![image](https://www.example.com/image.png)",
+            "text",
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("image", "image", "https://www.example.com/image.png"),
+            ],
+            new_nodes,
+        )
+    
+    def test_split_link_single(self):
+        node = TextNode(
+            "[to boot dev](https://www.boot.dev)",
+            "text",
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("to boot dev", "link", "https://www.boot.dev"),
+            ],
+            new_nodes,
+        )
 if __name__ == "__main__":
     unittest.main()
