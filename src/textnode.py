@@ -115,9 +115,25 @@ def split_nodes_link(old_nodes:list) -> list:
 
     return nodes
 
+def text_to_textnodes(text:str) -> list:
+    node = TextNode(text, "text")
+
+    bold_parsed_nodes = split_nodes_delimiter([node], "**", "bold")
+
+    italic_parsed_nodes = split_nodes_delimiter(bold_parsed_nodes, "*", "italic")
+
+    code_parsed_nodes = split_nodes_delimiter(italic_parsed_nodes, "`", "code")
+
+    link_parsed_nodes = split_nodes_link(code_parsed_nodes)
+
+    image_parsed_nodes = split_nodes_image(link_parsed_nodes)
+    
+    return image_parsed_nodes
+
 
 if __name__ == "__main__":
     print(split_nodes_image([TextNode("This is text with a image ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)",
                                     "text")]))
     print(split_nodes_link([TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
                                     "text")]))
+    print(text_to_textnodes("This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"))
