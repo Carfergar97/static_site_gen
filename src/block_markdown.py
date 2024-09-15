@@ -3,7 +3,7 @@ def markdown_to_blocks(markdown:str) -> list:
     if markdown == "":
         return [""]
     
-    blocks_lst = markdown.split("\n")
+    blocks_lst = markdown.split("\n\n")
     for i in range(blocks_lst.count("")):
         blocks_lst.remove("")
     for line in blocks_lst: 
